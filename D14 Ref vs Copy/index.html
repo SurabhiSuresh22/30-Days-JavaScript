@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ref vs Copy</title>
+</head>
+<body>
+<script type="text/javascript">
+	//strings, nubers, booleans you can changes, doesnt affect the other.
+	let a = 10;
+	let b = a;
+	console.log(a,b);
+	a = 20;
+	console.log(a,b);
+	
+	let c = 'name';
+	let d = c;
+	d = 'nome';
+	console.log(c,d);
+
+
+	// array   -- yea they change, hence is reference
+	const e = ['a','b','c','d'];
+	const f = e;
+	console.log(e,f);
+	f[2] = 3;
+	console.log(e,f);
+
+	// so you can make a copy of the array instead
+	const g = ['a','b','c','d'];
+	//const h = [...g]
+
+	//const h = g.slice(); //gives copy of actual array.
+
+	//const h = [].concat(g);
+
+	//const h = Array.from(g);
+	//console.log(g,h);
+
+	//with objects
+	const student = {
+		name: 'arya',
+		age : 19,
+		social: {
+			twitter: 'abc',
+			fb: 'cdef',
+		}
+	};
+
+	const stud1 = student;  //its a reference
+	stud1.rollno = 50;
+
+	//make copy
+	const stud2 = Object.assign({},student,{number : 60});
+
+	//const stud3 = Object.assign({},student);
+	//stud3.social.twitter = 'cfghi';   
+
+	//-- reference bcoz it clones only one level, to make a copy of whole we need to deep clone -- code below.
+	//console.log(stud3.social, student.social);
+
+	const stud4 = JSON.parse(JSON.stringify(student));
+	//yea, now its ok... parse to convert to object.
+</script>
+</body>
+</html>

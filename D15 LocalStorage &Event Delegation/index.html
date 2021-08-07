@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>local storage and event delegation</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="bgimg"></div>
+
+<div class="wrapper">
+  <h2>Spicy Foods</h2>
+		<p></p>
+		<ul class="plates">
+			<li>Loading chicken....</li>
+		</ul>
+		<form class="add-item">
+			<input type="text" name="item" placeholder="Items">
+			<input type="submit" value="+ Add Item">
+		</form>
+</div>
+
+	<script type="text/javascript">
+	
+	const addItems = document.querySelector('.add-item');
+	const itemsList = document.querySelector('.plates');
+	const items = JSON.parse(localStorage.getItem('items')) || [];
+	//inputs
+	// <li>--list item
+	// get items from local storage as object, by parsing(stored with name 'items')
+	// for the very first time it will be equal to [] (is present after '||')
+	
+  // the or order matters for memory to persist
+
+	 function addItem(e) {
+			e.preventDefault();
+			const text = (this.querySelector('[name=item]')).value;
+			const item = {
+				text,
+				done: false
+			};
+			
+			// prevent the default ie, prevent the page from reloading on submit press
+			//getting the text from input with name = item
+			// input with name item selected, its value taken and given to an item, many inputs form items that are put into an array
+			//assigning the content, ie text to an object item
+			
+			items.push(item);
+			populateList(items,itemsList);
+			localStorage.setItem('items',JSON.stringify(items));
+			this.reset(); 
+
+			// item list is that code with class - plates
+			// function calling to set the html page with input entered text.
+			//store the items added to localstorage each time an item is added			
+			//the given 'object' is returned as object string "[object Object]", so we need to stringyfy it ro convert to string the object,actual object 
+			//save to local storage..   .parse will convert it to original object			
+			//to clear input space on entering
+
+			//push, print, store, rest input box
+	}
+		
+	// from the array(given as argument1-plates), we take each one of item in plates and put the text inside the html content so that we can see them. so both array and html are given as arguments and in that html we put each item(plate) from plates.
+
+	function populateList(plates = [], platesList)  {
+			platesList.innerHTML = plates.map((plate,i) => {
+			return`
+				<li>
+				<input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked':''}/>
+				<label for="item${i}">${plate.text}</label>
+				</li>
+					`;
+			}).join('');
+
+
+			//map is a function taking argument plate to execute the code after return keyword here.
+			//map wil return an array, join will take the array that map and turn it into  one big string, instead of number of strings in array
+  }
+
+  function toggleDone(e){
+    if(!e.target.matches('input')) return;
+    //skip unless its a input
+  	const el = e.target; 
+  	//target nte index edth done toggle(on click-here bcoz called on click and store, modify the html accordingly using-populateList-- modifications in css mentioned 
+  	const index = el.dataset.index;
+  	items[index].done= !items[index].done;
+  	localStorage.setItem('items',JSON.stringify(items));
+  	populateList(items,itemsList);
+  }
+
+		// when we refresh, the checked and entered data goes, so we are going to save it in local storage
+		//push, print, store, rest input box
+		addItems.addEventListener('submit',addItem);
+		// toggle-check and uncheck
+		itemsList.addEventListener('click',toggleDone);
+		populateList(items,itemsList);
+	
+
+		//const checkBoxes = document.querySelectorAll('input');
+		//checkBoxes.forEach(input => input.addEventListener('click', ()=> alert('Hi')));
+
+		//runs the code, but if we add a new item to list and then check, it does not run becuse becoz the inputs are created after we listen for them, hence they dont have event listeners attached.
+
+		//idea behind event delegation is rather than listening for a click/change on checkboxes directly, we look for somebody who is going to be on the page at the time of listening.
+
+		// the idea is that the newly added one must know what the earlier added items did(handle click here) , and the old one should tell new ones(their responsibility) to handle click.
+</script>
+</body>
+</html>
